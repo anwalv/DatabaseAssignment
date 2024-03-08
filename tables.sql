@@ -113,8 +113,8 @@ INSERT INTO books VALUES (27, 'The Family of Kajdashevs','3929-399-439-10-2', 1,
 
 
 CREATE TABLE book_author (
-                             book_id INT NOT NULL,
-                             author_id INT NOT NULL,
+                             book_id INT NOT NULL ,
+                             author_id INT NOT NULL ,
                              FOREIGN KEY(book_id) REFERENCES books(id),
                              FOREIGN KEY(author_id) REFERENCES author(id)
 
@@ -146,11 +146,12 @@ INSERT INTO book_author VALUES(24, 18);
 INSERT INTO book_author VALUES(25, 18);
 INSERT INTO book_author VALUES(26, 18);
 INSERT INTO book_author VALUES(27, 19);
+INSERT INTO book_author VALUES(20, 4);
 
 
 
 CREATE TABLE book_genre(
-                           book_id INT NOT NULL,
+                           book_id INT NOT NULL ,
                            genre_id INT NOT NULL,
                            FOREIGN KEY(book_id) REFERENCES books(id),
                            FOREIGN KEY(genre_id) REFERENCES genres(id)
@@ -243,7 +244,10 @@ INSERT INTO loan VALUES(10, 7, '2024-01-12', '2024-02-02', NULL);
 
 CREATE TABLE book_loan(
                           book_id INT NOT NULL,
-                          loan_id INT NOT NULL
+                          loan_id INT NOT NULL,
+                          FOREIGN KEY(book_id) REFERENCES books(id),
+                          FOREIGN KEY(loan_id) REFERENCES loan(id)
+    
 );
 INSERT INTO book_loan VALUES(1, 3);
 INSERT INTO book_loan VALUES(2, 8);
@@ -272,17 +276,17 @@ FROM books b
          JOIN book_genre bg ON b.id = bg.book_id
          JOIN genres g ON bg.genre_id = g.id
          JOIN publisher p ON b.publisher_id = p.id
-WHERE b.title IN (
-    SELECT title
+WHERE b.id IN (
+    SELECT id
     FROM (
-             SELECT b.title, COUNT(*) AS count_favorites
+             SELECT b.id, COUNT(*) AS count_favorites
              FROM books b
                       JOIN book_loan bl ON b.id = bl.book_id
-             GROUP BY b.title
+             GROUP BY b.id
              ORDER BY count_favorites DESC
              LIMIT 5
          ) AS favorite_books
 );
 
 
--- DROP TABLE *назва
+SELECT * FROM book_loan;
