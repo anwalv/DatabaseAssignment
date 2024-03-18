@@ -30,6 +30,7 @@ INSERT INTO author VALUES (17, 'Iryna Hrabovska', '1987-05-17', 'Ukraine', 'Ukra
 INSERT INTO author VALUES (18, 'Natalia Shcherba', '1981-07-21', 'Ukraine', 'Ukrainian writer. She writes her works in the genre of young adult fantasy and fantasy. She has been living in Slovakia since 2020, before the full-scale Russian invasion of Ukraine she lived in Ivano-Frankivsk[2]. Her most famous works are the cycle of young adult novels "Timehunters," "Spellbinder," "Moonstars," and "Finist."');
 INSERT INTO author VALUES (19, 'Ivan Nechuy-Levytsky', '1769-08-11', 'Ukraine', 'Ukrainian writer, ethnographer, folklorist, and educator.');
 
+
 CREATE TABLE publisher (
                            id INT PRIMARY KEY,
                            name CHAR (100) NOT NULL,
@@ -228,7 +229,7 @@ CREATE TABLE loan (
                       due_date DATE NOT NULL,
                       return_date DATE,
                       FOREIGN KEY (client_id) REFERENCES clients(id)
-);
+); 
 
 
 INSERT INTO loan VALUES(1, 1, '2024-02-01', '2024-02-15', NULL);
@@ -287,6 +288,3 @@ WHERE b.id IN (
              LIMIT 5
          ) AS favorite_books
 );
-
-
-SELECT * FROM book_loan;
