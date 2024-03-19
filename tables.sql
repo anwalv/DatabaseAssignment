@@ -288,3 +288,4 @@ WHERE b.id IN (
              LIMIT 5
          ) AS favorite_books
 );
+

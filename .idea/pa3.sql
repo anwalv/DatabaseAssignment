@@ -110,3 +110,110 @@ WHERE EXISTS (
 
 
 
+/*----------UPDATE----------*/
+
+    
+/*.1.Збільшує ціну книг на 10%, на книги які не брали в борг(non-correlated, NOT IN)*/
+UPDATE books b
+SET b.price = b.price * 1.1
+WHERE b.id NOT IN (
+    SELECT book_id
+    FROM book_loan
+);
+
+/*.2. Збільшення ціни на 30% у книг які хоч раз були взяті в борг(correlated, EXISTS)*/
+UPDATE books b
+SET b.price = b.price * 1.3
+WHERE EXISTS (
+    SELECT 1
+    FROM book_loan bl
+    WHERE bl.book_id = b.id
+);
+
+/*.3. Зменшення ціни книг конкретного автора які не були взяті в борг(correlated, NOT EXISTS)*/
+UPDATE books b
+SET b.price = b.price * 0.9
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM book_author ba
+    JOIN book_loan bl ON ba.book_id = bl.book_id
+    WHERE ba.author_id = 3 AND b.id = ba.book_id
+);
+
+/*.4.Оновлюється дата повернення книг, через закриття бібліотеки в Житомирі(non-correlated, IN)*/
+UPDATE loan l
+SET due_date = '2024-05-08'
+WHERE client_id IN (
+    SELECT c.id
+    FROM clients c
+    WHERE c.address LIKE '%Zhytomyr%'
+);
+/*.5.Ціна книг які були видані віватом вбільшується на 40% *зажрались* (non- correlated, =)*/
+UPDATE books b
+SET b.price = b.price * 1.4
+WHERE b.publisher_id = (
+    SELECT id
+    FROM publisher p
+    WHERE p.name = 'Vivat'
+);
+
+/*.6. Додається примітка про внесок в жанр, в біографію авторів як писали фентезі(correlated,IN)*/
+UPDATE author a
+SET a.biography = CONCAT(a.biography, ' [Note: Contributed to the fantasy genre.]')
+WHERE a.id IN (
+    SELECT author_id
+    FROM book_author ba
+    JOIN book_genre bg ON ba.book_id = bg.book_id
+    WHERE ba.author_id = a.id
+      AND bg.genre_id = (
+        SELECT g.id
+        FROM genres g
+        WHERE g.genre = 'Fantasy'
+    )
+);
+/*.7 оновлює рік публікації книг, які були видані певним видавцем якщо ці книги в позиках(не дуже make sense але фантація закінчилась)(non correlated, exists)*/
+UPDATE books
+SET publication_year = 2023
+WHERE publisher_id = 2
+  AND EXISTS (
+    SELECT 1
+    FROM book_author ba
+    JOIN author a ON ba.author_id = a.id
+    WHERE a.nationality = 'Ukraine'
+);
+
+/*.8.Оновлюється інформація про неактивних користувачів(correlated, NOT IN)*/
+UPDATE clients c
+SET c.name = CONCAT(c.name, ' [Inactive User]')
+WHERE c.id NOT IN (
+    SELECT DISTINCT client_id
+    FROM loan l
+    WHERE l.client_id = c.id
+);
+
+/*9.(correlated,=)*/
+UPDATE loan AS l
+SET return_date = CURRENT_DATE
+WHERE l.return_date IS NULL
+  AND l.due_date < CURRENT_DATE
+  AND l.id = (
+    SELECT bl.loan_id
+    FROM book_loan AS bl
+             INNER JOIN books AS b ON bl.book_id = b.id
+    WHERE bl.loan_id = l.id
+);
+
+/*.10.оновлює рік публікації книг на 2016, які були видані видавцем з id 4, і яких немає в позиках.(non-correlated, NOT EXIST)*/
+UPDATE books
+SET publication_year = 2016
+WHERE publisher_id = 4
+  AND NOT EXISTS (
+    SELECT 1
+    FROM book_author ba
+             JOIN author a ON ba.author_id = a.id
+    WHERE ba.book_id = books.id
+      AND a.nationality = 'America'
+);
+
+/*--------DELETE-------/*
+
