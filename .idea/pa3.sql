@@ -215,5 +215,92 @@ WHERE publisher_id = 4
       AND a.nationality = 'America'
 );
 
+
+
 /*--------DELETE-------/*
 
+  
+/*.1.(non-correlated, =)*/
+DELETE FROM books
+WHERE price = (
+    SELECT MAX(price)
+    FROM books
+);
+/*.2.(non-correlated, IN)*/
+DELETE FROM books
+WHERE genre_id IN (
+    SELECT id
+    FROM genres
+    WHERE genre = 'Horror'
+);
+/*.3.(non-correlated,NOT IN)*/
+DELETE FROM books
+WHERE genre_id NOT IN (
+    SELECT id
+    FROM genres
+    WHERE genre = 'Thriller'
+);
+/*(correlated,IN)*/
+DELETE FROM books
+WHERE genre_id IN (
+    SELECT genre_id
+    FROM book_genre
+    WHERE book_genre.book_id = books.id
+);
+
+/*(correlated, NOT IN)*/
+DELETE FROM books
+WHERE genre_id NOT IN (
+    SELECT genre_id
+    FROM book_genre
+    WHERE book_genre.book_id = books.id
+);
+/*(correlated NOT EXIST)*/
+
+DELETE FROM books
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM book_genre
+    WHERE book_genre.book_id = books.id
+      AND book_genre.genre_id = 1 
+);
+/*(correlated,  EXIST)*/
+DELETE FROM loan
+WHERE EXISTS (
+    SELECT 1
+    FROM book_loan
+    WHERE book_loan.loan_id = loan.id
+      AND EXISTS (
+        SELECT 1
+        FROM loan AS returned_loan
+        WHERE returned_loan.id = loan.id
+          AND returned_loan.return_date IS NOT NULL 
+    )
+);
+/*(non-correlated,  EXIST)*/
+DELETE FROM books
+WHERE EXISTS (
+    SELECT 1
+    FROM loan
+    JOIN clients ON loan.client_id = clients.id
+    WHERE clients.address LIKE '%Львів%' 
+);
+
+/*(non-correlated,  NOT EXIST)*/
+DELETE FROM clients
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM loan
+             JOIN book_genre ON loan.book_id = book_genre.book_id
+             JOIN genres ON book_genre.genre_id = genres.id
+    WHERE genres.genre = 'Fantasy'
+);
+/*(correlated, =)*/
+DELETE FROM books
+WHERE EXISTS (
+    SELECT 1
+    FROM loan AS l
+             JOIN clients AS c ON l.client_id = c.id
+    WHERE l.book_id = books.id
+      AND c.name = 'Ivan Petrov'
+);
