@@ -383,3 +383,5 @@ FROM books b
 JOIN book_genre bg ON b.id = bg.book_id
 JOIN genres g ON bg.genre_id = g.id
 WHERE g.genre = 'Fantasy';
+
+/*---*/
