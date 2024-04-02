@@ -226,26 +226,35 @@ WHERE price = (
 );
 /*.2.Видаляємо книги з жанром горор(non-correlated, IN)*/
 DELETE FROM books
-WHERE genre_id IN (
-    SELECT id
-    FROM genres g
+WHERE id IN (
+    SELECT b.id
+    FROM books b
+             JOIN book_genre bg ON b.id = bg.book_id
+             JOIN genres g ON bg.genre_id = g.id
     WHERE g.genre = 'Horror'
 );
+
 /*.3.Видаляємо книги які за жанром не триллер(non-correlated,NOT IN)*/
 DELETE FROM books
-WHERE genre_id NOT IN (
-    SELECT id
-    FROM genres g
+WHERE id NOT IN (
+    SELECT b.id
+    FROM books b
+             JOIN book_genre bg ON b.id = bg.book_id
+             JOIN genres g ON bg.genre_id = g.id
     WHERE g.genre = 'Thriller'
 );
+
 /*.4. Видаляємо книги, які належать жанрам з менш ніж 3 книгами(correlated,IN)*/
-DELETE FROM books b
-WHERE genre_id IN (
-    SELECT genre_id
-    FROM book_genre
-    WHERE book_id = b.id
-    GROUP BY genre_id
-    HAVING COUNT(*) < 3
+DELETE FROM books b 
+WHERE EXISTS (
+    SELECT 1
+    FROM book_author ba
+    WHERE ba.book_id = b.id
+      AND ba.author_id IN (
+        SELECT a.id
+        FROM author a
+        WHERE a.name = 'Donna Tartt'
+    )
 );
 
 /*.5.Видаляємо книги, які мають більше одного автора(correlated, NOT IN)*/
@@ -264,10 +273,13 @@ DELETE FROM books b1
 WHERE NOT EXISTS (
     SELECT 1
     FROM books b2
-    WHERE b1.genre_id = b2.genre_id
-    GROUP BY b2.genre_id
+    JOIN book_genre bg1 ON b2.id = bg1.book_id
+    JOIN book_genre bg2 ON bg1.genre_id = bg2.genre_id
+    WHERE b1.id = b2.id
+    GROUP BY bg2.genre_id, b2.price
     HAVING AVG(b2.price) < b1.price
 );
+
 
 /*.7.Видаляє записи,у яких книги були повернені(correlated,  EXIST)*/
 DELETE FROM loan l
@@ -295,20 +307,23 @@ WHERE EXISTS (
 DELETE FROM clients
 WHERE NOT EXISTS (
     SELECT 1
-    FROM loan l 
-    JOIN book_genre bg ON l.book_id = bg.book_id
+    FROM loan l, book_loan bl
+    JOIN book_genre bg ON bl.book_id = bg.book_id
     JOIN genres g ON bg.genre_id = g.id
-    WHERE g.genre = 'Fantasy'
+    WHERE l.client_id = clients.id
+      AND g.genre = 'Fantasy'
 );
 
+
+
 /*.10.Видаляє запис з книг, якщо хоча б один клієнт з іменем "Іван Петров" позичив цю книгу(вкрав напевно)(correlated, =)*/
-DELETE FROM books b
+DELETE FROM books
 WHERE EXISTS (
     SELECT 1
-    FROM loan l
+    FROM book_loan bl, loan l
     JOIN clients c ON l.client_id = c.id
-    WHERE l.book_id = b.id
-    AND c.name = 'Ivan Petrov'
+    WHERE bl.book_id = books.id
+      AND c.name = 'Ivan Petrov'
 );
 
 
