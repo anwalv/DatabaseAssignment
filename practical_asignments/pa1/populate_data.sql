@@ -1,15 +1,3 @@
-create schema myTask;
-use myTask;
-
-
-CREATE TABLE author (
-                        id INT PRIMARY KEY,
-                        name VARCHAR(100) NOT NULL,
-                        birthdate DATE NOT NULL,
-                        nationality VARCHAR(100) NOT NULL,
-                        biography TEXT (6000)
-);
-
 INSERT INTO author VALUES (1, 'Illarion Pavliuk', '1980-05-14', 'Ukraine', 'Writer, producer, head of the Press and Information Department of the Ministry of Defense [1], junior lieutenant of the Armed Forces of Ukraine (since 2023), participant in the Russian-Ukrainian war, journalist, documentarian, author of bestsellers "I See You Are Interested in Darkness," "White Ashes," "The Dance of the Ignorant." Father of many children.');
 INSERT INTO author VALUES (2, 'Penelope Douglas', '1977-02-01', 'America', 'American writer who works in the genre of contemporary romance and romantic prose. Penelope Douglas works are characterized by a deep immersion into the character and inner world of the main heroes who have to overcome difficult life challenges.');
 INSERT INTO author VALUES (3, 'George Orwell', '1903-06-23', 'England', 'English writer, journalist, essayist, literary critic. He wrote journalistic sketches and political and literary essays. He became world famous thanks to two works written in the last years of his life: the political allegory "Animal Farm" and the dystopian novel "1984," in which he depicted a totalitarian society. He introduced the term "cold war" into political language.');
@@ -31,14 +19,6 @@ INSERT INTO author VALUES (18, 'Natalia Shcherba', '1981-07-21', 'Ukraine', 'Ukr
 INSERT INTO author VALUES (19, 'Ivan Nechuy-Levytsky', '1769-08-11', 'Ukraine', 'Ukrainian writer, ethnographer, folklorist, and educator.');
 
 
-CREATE TABLE publisher (
-                           id INT PRIMARY KEY,
-                           name CHAR (100) NOT NULL,
-                           address VARCHAR(100) ,
-                           phone VARCHAR(50),
-                           website VARCHAR(300)
-);
-
 INSERT INTO publisher VALUES(1,'VSL', 'spilnota@starlev.com.ua','(067) 674 46 45', 'https://starylev.com.ua/');
 INSERT INTO publisher VALUES(2,'School', 'sales.schoolbook@gmail.com', '(067) 766-00-77', 'https://schoolbook.com.ua/');
 INSERT INTO publisher VALUES(3,'KSD', 'supports@bookclub.ua', '0 800 301 090', 'https://bookclub.ua/');
@@ -50,13 +30,6 @@ INSERT INTO publisher VALUES(8,'Folio', 'store@folio.com.ua', '38 (050)448-41-57
 INSERT INTO publisher VALUES(9,'Educational Book - Bohdan', 'zbut@bohdan-books.com', '(0352) 52-06-07 ','https://bohdan-books.com/');
 INSERT INTO publisher VALUES(10,'Vivat', 'ishop@vivat.factor.ua', '0-800-201-102', 'https://vivat-book.com.ua/');
 
-
-
-CREATE TABLE genres (
-                        id INT PRIMARY KEY,
-                        genre VARCHAR(100) NOT NULL,
-                        description TEXT NOT NULL
-);
 
 INSERT INTO genres VALUES(1, 'Thriller', 'A genre of film and literature in which specific techniques are used to evoke in viewers or readers a feeling of anxious anticipation, uncertainty, excitement, or fear');
 INSERT INTO genres VALUES(2, 'Novel', 'Literary format, most common in the 18th-20th centuries; a large, complex epic work in which a wide range of life events is covered, and the history of the formation of the characters of many characters is deeply revealed.');
@@ -70,18 +43,6 @@ INSERT INTO genres VALUES(9, 'Classic', 'Works of this genre are examples for a 
 INSERT INTO genres VALUES(10, 'Psychological Thriller', 'A genre that combines elements of thriller and psychological fiction. The term is usually used to describe literature or films that explore psychological thriller plots or intense, tense atmospheres.');
 INSERT INTO genres VALUES(11, 'Mystery', 'Western European medieval religious drama, originating from liturgical action, based on biblical plots.');
 
-
-
-
-CREATE TABLE books (
-                       id INT PRIMARY KEY,
-                       title VARCHAR(200) NOT NULL,
-                       isbn VARCHAR(17),
-                       publisher_id INT NOT NULL,
-                       publication_year YEAR NOT NULL,
-                       price DECIMAL(10, 2) NOT NULL,
-                       FOREIGN KEY (publisher_id) REFERENCES publisher(id)
-);
 
 INSERT INTO books VALUES (1, 'I See You in the Dark','1234-567-123-13-7', 1, 2020, 465.50);
 INSERT INTO books VALUES (2, 'Seven Men of Evelyn Hugo', '1234-567-123-17-7', 2, 2021, 504.32);
@@ -112,93 +73,6 @@ INSERT INTO books VALUES (26, 'Moontreys: Dance of the White Dwarfs', '4819-111-
 INSERT INTO books VALUES (27, 'The Family of Kajdashevs','3929-399-439-10-2', 1, 2011, 140.00 );
 
 
-
-CREATE TABLE book_author (
-                             book_id INT NOT NULL ,
-                             author_id INT NOT NULL ,
-                             FOREIGN KEY(book_id) REFERENCES books(id),
-                             FOREIGN KEY(author_id) REFERENCES author(id)
-
-);
-INSERT INTO book_author VALUES(1, 1);
-INSERT INTO book_author VALUES(2, 2);
-INSERT INTO book_author VALUES(3, 2);
-INSERT INTO book_author VALUES(4, 3);
-INSERT INTO book_author VALUES(5, 4);
-INSERT INTO book_author VALUES(6, 4);
-INSERT INTO book_author VALUES(7, 5);
-INSERT INTO book_author VALUES(8, 6);
-INSERT INTO book_author VALUES(9, 7);
-INSERT INTO book_author VALUES(10, 7);
-INSERT INTO book_author VALUES(11, 7);
-INSERT INTO book_author VALUES(12, 8);
-INSERT INTO book_author VALUES(13, 9);
-INSERT INTO book_author VALUES(14, 10);
-INSERT INTO book_author VALUES(15, 11);
-INSERT INTO book_author VALUES(16, 12);
-INSERT INTO book_author VALUES(17, 13);
-INSERT INTO book_author VALUES(18, 13);
-INSERT INTO book_author VALUES(19, 14);
-INSERT INTO book_author VALUES(20, 15);
-INSERT INTO book_author VALUES(21, 16);
-INSERT INTO book_author VALUES(22, 17);
-INSERT INTO book_author VALUES(23, 18);
-INSERT INTO book_author VALUES(24, 18);
-INSERT INTO book_author VALUES(25, 18);
-INSERT INTO book_author VALUES(26, 18);
-INSERT INTO book_author VALUES(27, 19);
-INSERT INTO book_author VALUES(20, 4);
-
-
-
-CREATE TABLE book_genre(
-                           book_id INT NOT NULL ,
-                           genre_id INT NOT NULL,
-                           FOREIGN KEY(book_id) REFERENCES books(id),
-                           FOREIGN KEY(genre_id) REFERENCES genres(id)
-
-);
-INSERT INTO book_genre VALUES(1, 1);
-INSERT INTO book_genre VALUES(2, 2);
-INSERT INTO book_genre VALUES(3, 3);
-INSERT INTO book_genre VALUES(4, 4);
-INSERT INTO book_genre VALUES(5, 5);
-INSERT INTO book_genre VALUES(6, 3);
-INSERT INTO book_genre VALUES(7, 6);
-INSERT INTO book_genre VALUES(8, 7);
-INSERT INTO book_genre VALUES(9, 2);
-INSERT INTO book_genre VALUES(10, 2);
-INSERT INTO book_genre VALUES(11, 2);
-INSERT INTO book_genre VALUES(12, 8);
-INSERT INTO book_genre VALUES(13, 7);
-INSERT INTO book_genre VALUES(14, 9);
-INSERT INTO book_genre VALUES(15, 11);
-INSERT INTO book_genre VALUES(16, 10);
-INSERT INTO book_genre VALUES(17, 8);
-INSERT INTO book_genre VALUES(18, 8);
-INSERT INTO book_genre VALUES(19, 7);
-INSERT INTO book_genre VALUES(20, 6);
-INSERT INTO book_genre VALUES(21, 1);
-INSERT INTO book_genre VALUES(22, 4);
-INSERT INTO book_genre VALUES(23, 3);
-INSERT INTO book_genre VALUES(24, 9);
-INSERT INTO book_genre VALUES(25, 10);
-INSERT INTO book_genre VALUES(26, 11);
-INSERT INTO book_genre VALUES(27, 6);
-INSERT INTO book_genre VALUES(27, 8);
-
-
-
-
-CREATE TABLE clients (
-                         id INT PRIMARY KEY ,
-                         name VARCHAR(100) NOT NULL,
-                         address VARCHAR(255) NOT NULL,
-                         phone VARCHAR(20) NOT NULL,
-                         email VARCHAR(100) NOT NULL,
-                         user_password VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH(user_password) >= 6 AND CHAR_LENGTH(user_password) <= 30)
-);
-
 INSERT INTO clients VALUES(1,'Ivan Petrov', 'Shevchenko St., 10, Kyiv', '380951234567', 'ivan@example.com', 'password1');
 INSERT INTO clients VALUES(2,'Maria Ivanova', 'Lesi Ukrainki St., 5, Lviv', '380981234567', 'maria@example.com', 'password2');
 INSERT INTO clients VALUES(3,'Oleg Sidorenko', 'Peremohy Ave., 25, Kharkiv', '380931234567', 'oleg@example.com', 'password3');
@@ -221,17 +95,6 @@ INSERT INTO clients VALUES(19,'Yulia Oliinyk', 'Zhytneva St., 7, Zhytomyr', '380
 INSERT INTO clients VALUES(20,'Mykhailo Semenov', 'Shevchenko St., 11, Ternopil', '380951234567', 'mikhailo@example.com', 'password20');
 
 
-
-CREATE TABLE loan (
-                      id INT PRIMARY KEY ,
-                      client_id INT NOT NULL UNIQUE,
-                      loan_date DATE NOT NULL,
-                      due_date DATE NOT NULL,
-                      return_date DATE,
-                      FOREIGN KEY (client_id) REFERENCES clients(id)
-); 
-
-
 INSERT INTO loan VALUES(1, 1, '2024-02-01', '2024-02-15', NULL);
 INSERT INTO loan VALUES(2, 5, '2024-01-20', '2024-02-10', '2024-02-08');
 INSERT INTO loan VALUES(3, 4, '2024-01-25', '2024-02-10', NULL);
@@ -242,50 +105,3 @@ INSERT INTO loan VALUES(7, 2, '2024-01-22', '2024-02-12', NULL);
 INSERT INTO loan VALUES(8, 3, '2024-01-28', '2024-02-15', '2024-02-14');
 INSERT INTO loan VALUES(9, 9, '2024-01-10', '2024-01-25', '2024-01-23');
 INSERT INTO loan VALUES(10, 7, '2024-01-12', '2024-02-02', NULL);
-
-CREATE TABLE book_loan(
-                          book_id INT NOT NULL,
-                          loan_id INT NOT NULL,
-                          FOREIGN KEY(book_id) REFERENCES books(id),
-                          FOREIGN KEY(loan_id) REFERENCES loan(id)
-    
-);
-INSERT INTO book_loan VALUES(1, 3);
-INSERT INTO book_loan VALUES(2, 8);
-INSERT INTO book_loan VALUES(9, 2);
-INSERT INTO book_loan VALUES(9, 6);
-INSERT INTO book_loan VALUES(4, 2);
-INSERT INTO book_loan VALUES(12, 1);
-INSERT INTO book_loan VALUES(10, 5);
-INSERT INTO book_loan VALUES(7, 7);
-INSERT INTO book_loan VALUES(20, 4);
-INSERT INTO book_loan VALUES(18, 9);
-
-
-SELECT author.name, COUNT(books.id) AS book_count
-FROM author
-         JOIN book_author ON author.id = book_author.author_id
-         JOIN books ON book_author.book_id = books.id
-GROUP BY author.name
-ORDER BY book_count DESC
-LIMIT 3;
-
-SELECT b.title AS book_title, a.name AS author_name, g.genre, p.name AS publisher_name
-FROM books b
-         JOIN book_author ba ON b.id = ba.book_id
-         JOIN author a ON ba.author_id = a.id
-         JOIN book_genre bg ON b.id = bg.book_id
-         JOIN genres g ON bg.genre_id = g.id
-         JOIN publisher p ON b.publisher_id = p.id
-WHERE b.id IN (
-    SELECT id
-    FROM (
-             SELECT b.id, COUNT(*) AS count_favorites
-             FROM books b
-                      JOIN book_loan bl ON b.id = bl.book_id
-             GROUP BY b.id
-             ORDER BY count_favorites DESC
-             LIMIT 5
-         ) AS favorite_books
-);
-
