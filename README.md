@@ -22,12 +22,13 @@ All practical assignments are contained in the practical_assignments directory f
 
 ## How to deploy the project:
 
-You must create a *my task* schema. In the file **schema.sql** and **schema_updates.sql** contains the main tables , in the file **populate_data.sql** you can find the data population for the tables. For the convenience of communication with the database in the file procedures.sql you can find stored procedures that will help you conveniently select and update the required data, for example:
+You must create a *my task* schema. In the file **schema.sql** and **schema_updates.sql** contains the main tables , in the file **populate_data.sql** you can find the data population for the tables. For the convenience of communication with the database in the file **procedures.sql** you can find stored procedures that will help you conveniently select and update the required data, for example:
 
 - Information about the book and dates in loans taken by a specific customer.
 - Change the return date in loans taken by clients from Kyiv and has an output of the number of changed lines.
 - Adds the prices of books by a certain author to the given one.
 - If it has no debts on books, it deletes the books of a certain author.
+
 Also in the file **views.sql** you can find a view, after running which it displays table which have information about rented books.
 
 ## About author:
